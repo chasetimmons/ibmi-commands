@@ -1,0 +1,41 @@
+/*---------------------------------------------------------------------------*/
+/*  OBJECT: GREP                                                             */
+/*    TEXT: UTILITY TO BUILD GREP SEARCH STRING                              */
+/*    TODO: - ADD IN DISPLAY WHEN NO PARMS PASSED                            */
+/*                                                                           */
+/* CREATED: 01/11/24                                                         */
+/*  AUTHOR: C.M.T.                                                           */
+/*---------------------------------------------------------------------------*/
+/* MODIFICATIONS:                                                            */
+/* DATE      MOD  AUTHOR      DESCRIPTION                                    */
+/* MM/DD/YY  /XXX XXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
+/*---------------------------------------------------------------------------*/
+            PGM        PARM(&TXT &LIB &FIL)                                   
+                                                                               
+            DCL        VAR(&TXT) TYPE(*CHAR) LEN(20)                          
+            DCL        VAR(&LIB) TYPE(*CHAR) LEN(6)                           
+            DCL        VAR(&FIL) TYPE(*CHAR) LEN(10)                          
+            DCL        VAR(&CMD) TYPE(*CHAR) LEN(100)     
+
+            DLTF       FILE(QTEMP/OUTPUT)                                  
+            MONMSG     MSGID(CPF2105)                                      
+            CRTPF      FILE(QTEMP/OUTPUT) RCDLEN(100)                      
+                                                                           
+            /* IF NO PARMS, BRING UP WINDOW TO ENTER THEM */               
+                                                                           
+            /* BUILD GREP SEARCH COMMAND */
+            /* '/usr/bin/grep -i -n /QSYS.LIB/<LIBRARY>.LIB/<FILE>.FILE/*.MBR' */
+            CHGVAR     VAR(&CMD) VALUE('/usr/bin/grep -i -n ' +            
+                                       *CAT &TXT +                         
+                                       *CAT ' /QSYS.LIB/' +                
+                                       *CAT &LIB *CAT '.LIB/' +            
+                                       *CAT %TRIM(&FIL) *CAT '.FILE/*.MBR')
+                                                                           
+            /* DIVERT STANDARD OUTPUT TO TEMP OUTPUT FILE */               
+            OVRDBF     FILE(STDOUT) TOFILE(QTEMP/OUTPUT)                   
+                                                                           
+            STRQSH     CMD(&CMD)               /* EXECUTE THE COMMAND */   
+            RUNQRY     QRYFILE((QTEMP/OUTPUT)) /* DISPLAY THE RESULTS */   
+            DLTOVR     FILE(*ALL)              /* CLEANUP             */   
+                                    
+            ENDPGM                                                                           
