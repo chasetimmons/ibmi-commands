@@ -10,7 +10,7 @@
 /* DATE      MOD  AUTHOR      DESCRIPTION                                    */
 /* MM/DD/YY  /XXX XXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
 /*---------------------------------------------------------------------------*/
-             PGM        PARM(&LIB &FIL)                                        
+             PGM        PARM(&FIL &LIB)                                        
                                                                                
              DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)                          
              DCL        VAR(&FIL) TYPE(*CHAR) LEN(10)                          
