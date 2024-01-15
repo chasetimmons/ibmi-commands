@@ -13,22 +13,20 @@
             PGM        PARM(&TXT &LIB &FIL)                                   
                                                                                
             DCL        VAR(&TXT) TYPE(*CHAR) LEN(20)                          
-            DCL        VAR(&LIB) TYPE(*CHAR) LEN(6)                           
+            DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)                           
             DCL        VAR(&FIL) TYPE(*CHAR) LEN(10)                          
             DCL        VAR(&CMD) TYPE(*CHAR) LEN(100)     
 
             DLTF       FILE(QTEMP/OUTPUT)                                  
             MONMSG     MSGID(CPF2105)                                      
-            CRTPF      FILE(QTEMP/OUTPUT) RCDLEN(100)                      
-                                                                           
-            /* IF NO PARMS, BRING UP WINDOW TO ENTER THEM */               
+            CRTPF      FILE(QTEMP/OUTPUT) RCDLEN(100)                              
                                                                            
             /* BUILD GREP SEARCH COMMAND */
             /* '/usr/bin/grep -i -n /QSYS.LIB/<LIBRARY>.LIB/<FILE>.FILE/*.MBR' */
             CHGVAR     VAR(&CMD) VALUE('/usr/bin/grep -i -n ' +            
-                                       *CAT &TXT +                         
+                                       *CAT %TRIM(&TXT) +                         
                                        *CAT ' /QSYS.LIB/' +                
-                                       *CAT &LIB *CAT '.LIB/' +            
+                                       *CAT %TRIM(&LIB) *CAT '.LIB/' +            
                                        *CAT %TRIM(&FIL) *CAT '.FILE/*.MBR')
                                                                            
             /* DIVERT STANDARD OUTPUT TO TEMP OUTPUT FILE */               
@@ -38,4 +36,4 @@
             RUNQRY     QRYFILE((QTEMP/OUTPUT)) /* DISPLAY THE RESULTS */   
             DLTOVR     FILE(*ALL)              /* CLEANUP             */   
                                     
-            ENDPGM                                                                           
+            ENDPGM
