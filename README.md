@@ -1,5 +1,5 @@
 # ibmi-commands
-<b>IBM i Custom Commands</b>  
+<b>IBM i CL Utilities</b>  
 Mostly for fun, some useful little utilities that make my life easier.
 <hr>  
 
