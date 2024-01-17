@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*/
 /*  OBJECT: GREP                                                             */
 /*    TEXT: UTILITY TO BUILD GREP SEARCH STRING                              */
-/*    TODO: - ADD IN DISPLAY WHEN NO PARMS PASSED                            */
+/*    TODO:                                                                  */
 /*                                                                           */
 /* CREATED: 01/11/24                                                         */
 /*  AUTHOR: C.M.T.                                                           */
@@ -10,16 +10,18 @@
 /* DATE      MOD  AUTHOR      DESCRIPTION                                    */
 /* MM/DD/YY  /XXX XXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
 /*---------------------------------------------------------------------------*/
-            PGM        PARM(&TXT &LIB &FIL)                                   
+             PGM        PARM(&TXT &LIB &FIL &FLG)                              
                                                                                
-            DCL        VAR(&TXT) TYPE(*CHAR) LEN(20)                          
-            DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)                           
-            DCL        VAR(&FIL) TYPE(*CHAR) LEN(10)                          
-            DCL        VAR(&CMD) TYPE(*CHAR) LEN(100)     
-
-            DLTF       FILE(QTEMP/OUTPUT)                                  
-            MONMSG     MSGID(CPF2105)                                      
-            CRTPF      FILE(QTEMP/OUTPUT) RCDLEN(100)                              
+             DCL        VAR(&TXT) TYPE(*CHAR) LEN(20)      /* SEARCH TEXT    */
+             DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)      /* LIBRARY        */
+             DCL        VAR(&FIL) TYPE(*CHAR) LEN(10)      /* FILE           */
+             DCL        VAR(&CMD) TYPE(*CHAR) LEN(100)     /* COMMAND STRING */
+             DCL        VAR(&FLG) TYPE(*CHAR) LEN(1)       /* TESTING FLAG   */
+                                                                               
+             /* CLEAN UP AND PREPARE OUTPUT WORK FILE */                       
+             DLTF       FILE(QTEMP/OUTPUT)                                     
+             MONMSG     MSGID(CPF2105)                                         
+             CRTPF      FILE(QTEMP/OUTPUT) RCDLEN(100)                             
                                                                            
             /* BUILD GREP SEARCH COMMAND */
             /* '/usr/bin/grep -i -n /QSYS.LIB/<LIBRARY>.LIB/<FILE>.FILE/*.MBR' */
@@ -29,11 +31,17 @@
                                        *CAT %TRIM(&LIB) *CAT '.LIB/' +            
                                        *CAT %TRIM(&FIL) *CAT '.FILE/*.MBR')
                                                                            
-            /* DIVERT STANDARD OUTPUT TO TEMP OUTPUT FILE */               
-            OVRDBF     FILE(STDOUT) TOFILE(QTEMP/OUTPUT)                   
-                                                                           
-            STRQSH     CMD(&CMD)               /* EXECUTE THE COMMAND */   
-            RUNQRY     QRYFILE((QTEMP/OUTPUT)) /* DISPLAY THE RESULTS */   
-            DLTOVR     FILE(*ALL)              /* CLEANUP             */   
-                                    
-            ENDPGM
+            /* IF THE T FLAG IS PASSED IN FOR TESTING, DISPLAY COMMAND ONLY */
+            IF         COND(&FLG = 'T') THEN(DO)                              
+            SNDUSRMSG  MSG(&CMD)                                              
+            GOTO       CMDLBL(END)                                            
+            ENDDO                                                             
+                                                                              
+            /* DIVERT STANDARD OUTPUT TO TEMP OUTPUT FILE */                  
+            OVRDBF     FILE(STDOUT) TOFILE(QTEMP/OUTPUT)                      
+                                                                              
+            STRQSH     CMD(&CMD)               /* EXECUTE THE COMMAND */      
+            RUNQRY     QRYFILE((QTEMP/OUTPUT)) /* DISPLAY THE RESULTS */      
+            DLTOVR     FILE(*ALL)              /* CLEANUP             */      
+                                                                              
+END:        ENDPGM
