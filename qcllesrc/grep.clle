@@ -23,9 +23,9 @@
                                                                            
             /* BUILD GREP SEARCH COMMAND */
             /* '/usr/bin/grep -i -n /QSYS.LIB/<LIBRARY>.LIB/<FILE>.FILE/*.MBR' */
-            CHGVAR     VAR(&CMD) VALUE('/usr/bin/grep -i -n ' +            
+            CHGVAR     VAR(&CMD) VALUE('/usr/bin/grep -i -n "' +            
                                        *CAT %TRIM(&TXT) +                         
-                                       *CAT ' /QSYS.LIB/' +                
+                                       *CAT '" /QSYS.LIB/' +                
                                        *CAT %TRIM(&LIB) *CAT '.LIB/' +            
                                        *CAT %TRIM(&FIL) *CAT '.FILE/*.MBR')
                                                                            
