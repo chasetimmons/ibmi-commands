@@ -1,47 +1,64 @@
 /*---------------------------------------------------------------------------*/
-/*  OBJECT: GREP                                                             */
+/* OBJECT: GREP                                                            */
 /*    TEXT: UTILITY TO BUILD GREP SEARCH STRING                              */
+/*   USAGE: "GREP <TEXT> <LIBRARY> <FILE> {<FLAG>}"                          */
+/*   FLAGS: T - TESTING, DISPLAY COMMAND STRING                              */
+/*          O - OUTPUT TO FILE                                               */
 /*    TODO:                                                                  */
-/*                                                                           */
 /* CREATED: 01/11/24                                                         */
-/*  AUTHOR: C.M.T.                                                           */
+/* AUTHOR: C.M.T.                                                          */
 /*---------------------------------------------------------------------------*/
 /* MODIFICATIONS:                                                            */
 /* DATE      MOD  AUTHOR      DESCRIPTION                                    */
 /* MM/DD/YY  /XXX XXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
 /*---------------------------------------------------------------------------*/
-             PGM        PARM(&TXT &LIB &FIL &FLG)                              
-                                                                               
+             PGM        PARM(&TXT &LIB &FIL &FLG)
+
              DCL        VAR(&TXT) TYPE(*CHAR) LEN(20)      /* SEARCH TEXT    */
              DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)      /* LIBRARY        */
              DCL        VAR(&FIL) TYPE(*CHAR) LEN(10)      /* FILE           */
              DCL        VAR(&CMD) TYPE(*CHAR) LEN(100)     /* COMMAND STRING */
-             DCL        VAR(&FLG) TYPE(*CHAR) LEN(1)       /* TESTING FLAG   */
-                                                                               
-             /* CLEAN UP AND PREPARE OUTPUT WORK FILE */                       
-             DLTF       FILE(QTEMP/OUTPUT)                                     
-             MONMSG     MSGID(CPF2105)                                         
-             CRTPF      FILE(QTEMP/OUTPUT) RCDLEN(100)                             
-                                                                           
-            /* BUILD GREP SEARCH COMMAND */
-            /* '/usr/bin/grep -i -n /QSYS.LIB/<LIBRARY>.LIB/<FILE>.FILE/*.MBR' */
-            CHGVAR     VAR(&CMD) VALUE('/usr/bin/grep -i -n "' +            
-                                       *CAT %TRIM(&TXT) +                         
-                                       *CAT '" /QSYS.LIB/' +                
-                                       *CAT %TRIM(&LIB) *CAT '.LIB/' +            
-                                       *CAT %TRIM(&FIL) *CAT '.FILE/*.MBR')
-                                                                           
-            /* IF THE T FLAG IS PASSED IN FOR TESTING, DISPLAY COMMAND ONLY */
-            IF         COND(&FLG = 'T') THEN(DO)                              
-            SNDUSRMSG  MSG(&CMD)                                              
-            GOTO       CMDLBL(END)                                            
-            ENDDO                                                             
-                                                                              
-            /* DIVERT STANDARD OUTPUT TO TEMP OUTPUT FILE */                  
-            OVRDBF     FILE(STDOUT) TOFILE(QTEMP/OUTPUT)                      
-                                                                              
-            STRQSH     CMD(&CMD)               /* EXECUTE THE COMMAND */      
-            RUNQRY     QRYFILE((QTEMP/OUTPUT)) /* DISPLAY THE RESULTS */      
-            DLTOVR     FILE(*ALL)              /* CLEANUP             */      
-                                                                              
-END:        ENDPGM
+             DCL        VAR(&FLG) TYPE(*CHAR) LEN(1)       /* FLAG           */
+
+             /* CLEAN UP AND PREPARE OUTPUT WORK FILE */
+             DLTF       FILE(QTEMP/OUTPUT)
+             MONMSG     MSGID(CPF2105)
+             CRTPF      FILE(QTEMP/OUTPUT) RCDLEN(100)
+
+             /* BUILD GREP SEARCH COMMAND */
+             /* /USR/BIN/GREP -I -N /QSYS.LIB/<LIBRARY>.LIB/<FILE>.FILE/*.MBR */
+             CHGVAR     VAR(&CMD) VALUE('/usr/bin/grep -i -n "' +
+                                        *CAT %TRIM(&TXT)   +
+                                        *CAT '" /QSYS.LIB/' +
+                                        *CAT %TRIM(&LIB) *CAT '.LIB/' +
+                                        *CAT %TRIM(&FIL) *CAT '.FILE/*.MBR')
+
+             /* IF THE T FLAG IS PASSED IN FOR TESTING, DISPLAY COMMAND ONLY */
+             IF         COND(&FLG = 'T') THEN(DO)
+             SNDUSRMSG  MSG(&CMD)
+             GOTO       CMDLBL(END)
+             ENDDO
+
+             /* DIVERT STANDARD OUTPUT TO TEMP OUTPUT FILE */
+             OVRDBF     FILE(STDOUT) TOFILE(QTEMP/OUTPUT)
+
+             /* EXECUTE THE COMMAND */
+             STRQSH     CMD(&CMD)
+
+             /* IF THE O FLAG IS PASSED IN FOR OUTPUT, SAVE TO MY LIBRARY */
+             IF         COND(&FLG = 'O') THEN(DO)
+             CRTPF      FILE(CMTLIB/GREP) RCDLEN(240)
+             MONMSG     MSGID(CPF7302) EXEC(CLRPFM FILE(CMTLIB/GREP))
+             CPYF       FROMFILE(QTEMP/OUTPUT) TOFILE(CMTLIB/GREP) +
+                          MBROPT(*ADD) FMTOPT(*NOCHK)
+             SNDUSRMSG  MSG('Output saved to CMTLIB/GREP.')
+             ENDDO
+             ELSE       CMD(DO)
+             /* OTHERWISE, JUST DISPLAY THE RESULTS */
+             RUNQRY     QRYFILE((QTEMP/OUTPUT))
+             ENDDO
+
+             /* CLEANUP */
+             DLTOVR     FILE(*ALL)
+
+ END:        ENDPGM 
