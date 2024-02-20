@@ -51,7 +51,7 @@
              MONMSG     MSGID(CPF7302) EXEC(CLRPFM FILE(CMTLIB/GREP))
              CPYF       FROMFILE(QTEMP/OUTPUT) TOFILE(CMTLIB/GREP) +
                           MBROPT(*ADD) FMTOPT(*NOCHK)
-             SNDUSRMSG  MSG('Output saved to CMTLIB/GREP.')
+             SNDPGMMSG  MSG('Output saved to CMTLIB/GREP.')
              ENDDO
              ELSE       CMD(DO)
              /* OTHERWISE, JUST DISPLAY THE RESULTS */
