@@ -1,0 +1,8 @@
+/****************************************************/
+/* qspl- command to work with active jobs in qspl   */
+/* date- 6/7/24                                     */
+/* pgmr- ctimmons                                   */
+/****************************************************/
+             pgm
+             wrkactjob sbs(qspl)
+             endpgm
