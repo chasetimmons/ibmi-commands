@@ -1,0 +1,8 @@
+/****************************************************/
+/* qbat- command to work with active jobs in qbatch */
+/* date- 6/7/24                                     */
+/* pgmr- ctimmons                                   */
+/****************************************************/
+             PGM                                      
+             WRKACTJOB SBS(QBATCH)                    
+             ENDPGM                                   
