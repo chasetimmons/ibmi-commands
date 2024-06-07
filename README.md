@@ -14,3 +14,13 @@ Mostly for fun, some useful little utilities that make my life easier.
 <i>Example:</i> <br> ![image](https://github.com/chasetimmons/ibmi-commands/assets/38573434/a4cab734-e1b1-4728-b581-b9b8a64a417c) <br>
 <i>Result: (line numbers shown next to the member name)</i> ![image](https://github.com/chasetimmons/ibmi-commands/assets/38573434/2e577ed3-b34b-41aa-9f3a-8e9c182393e4)
 <hr>  
+
+> <b>PROXYCMDS</b> - Proxy Commands - Command Shortcuts 
+  <li>WMP - Work with Members Using PDM</li>
+  <li>WOP - Work with Objects Using PDM</li>
+  <li>WAJ - Work with Active Jobs</li>
+<br>
+  <li>QBAT - Work with Active Jobs in Subsystem QBATCH</li>
+  <li>QINT - Work with Active Jobs in Subsystem QINTER</li>
+  <li>QSPL - Work with Active Jobs in Subsystem QSPL</li>
+<hr>  
