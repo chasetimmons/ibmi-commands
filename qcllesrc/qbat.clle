@@ -3,6 +3,6 @@
 /* date- 6/7/24                                     */
 /* pgmr- ctimmons                                   */
 /****************************************************/
-             PGM                                      
-             WRKACTJOB SBS(QBATCH)                    
-             ENDPGM                                   
+             pgm
+             wrkactjob sbs(qbatch)
+             endpgm
