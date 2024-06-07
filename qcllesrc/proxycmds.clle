@@ -1,0 +1,9 @@
+PGM                                                                        
+                                                                           
+DCL VAR(&LIB) TYPE(*CHAR) LEN(10) VALUE('CMTLIB') /*   <-- Set Library   */
+                                                                           
+CRTPRXCMD CMD(&LIB/WMP) TGTCMD(WRKMBRPDM) /* Work With Members Using PDM */
+                                                                           
+CRTPRXCMD CMD(&LIB/WOP) TGTCMD(WRKOBJPDM) /* Work with Objects Using PDM */
+                                                                           
+CRTPRXCMD CMD(&LIB/WAJ) TGTCMD(WRKACTJOB) /* Work with Active Jobs       */
