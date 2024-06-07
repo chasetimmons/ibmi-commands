@@ -1,0 +1,8 @@
+/****************************************************/
+/* qint- command to work with active jobs in qinter */
+/* date- 6/7/24                                     */
+/* pgmr- ctimmons                                   */
+/****************************************************/
+             pgm                                      
+             wrkactjob sbs(qinter)                    
+             endpgm        
