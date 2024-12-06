@@ -7,3 +7,7 @@ CRTPRXCMD CMD(&LIB/WMP) TGTCMD(WRKMBRPDM) /* Work With Members Using PDM */
 CRTPRXCMD CMD(&LIB/WOP) TGTCMD(WRKOBJPDM) /* Work with Objects Using PDM */
                                                                            
 CRTPRXCMD CMD(&LIB/WAJ) TGTCMD(WRKACTJOB) /* Work with Active Jobs       */
+
+CRTPRXCMD CMD(&LIB/WUP) TGTCMD(WRKUSRPRF) /* Work with User Profile      */
+
+ENDPGM
