@@ -1,0 +1,87 @@
+/*---------------------------------------------------------------------------*/
+/*  OBJECT: getip                                                            */
+/*    TEXT: get the ip address of a display or printer device                */
+/* CREATED: 02/06/25                                                         */
+/*  AUTHOR: C.M.T.                                                           */
+/*---------------------------------------------------------------------------*/
+/* MODIFICATIONS:                                                            */
+/* DATE      MOD  AUTHOR      DESCRIPTION                                    */
+/* MM/DD/YY  /XXX XXXXXXXXXX  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
+/*---------------------------------------------------------------------------*/
+PGM PARM(&DEV)
+
+   DCL VAR(&DEV)       TYPE(*CHAR) LEN(10)
+   DCL VAR(&DCAT)      TYPE(*CHAR) LEN(10)
+   DCL VAR(&DCLS)      TYPE(*CHAR) LEN(10)
+   DCL VAR(&RCVVAR)    TYPE(*CHAR) LEN(2000)
+   DCL VAR(&RCVVARLEN) TYPE(*CHAR) LEN(4)
+   DCL VAR(&FMT01)     TYPE(*CHAR) LEN(8)   VALUE('DEVD0100')
+   DCL VAR(&FMT06)     TYPE(*CHAR) LEN(8)   VALUE('DEVD0600')
+   DCL VAR(&FMT11)     TYPE(*CHAR) LEN(8)   VALUE('DEVD1100')
+   DCL VAR(&ERRCODE)   TYPE(*CHAR) LEN(8)   VALUE(X'00000000')
+   DCL VAR(&IP)        TYPE(*CHAR) LEN(15)
+
+   CHGVAR VAR(%BIN(&RCVVARLEN)) VALUE(2000)
+   CHGVAR VAR(&DEV) VALUE(%UPPER(&DEV))
+
+   /*-------------------------------------------------------------------------*/
+   /* Get the device type to determine format to use using format 0100        */
+   /*-------------------------------------------------------------------------*/
+   CALL PGM(QDCRDEVD) PARM( &RCVVAR    +
+                            &RCVVARLEN +
+                            &FMT01     +
+                            &DEV       +
+                            &ERRCODE   )
+
+   MONMSG MSGID(CPF2702) EXEC(GOTO CMDLBL(NODEV))
+   CHGVAR VAR(&DCAT) VALUE(%SST(&RCVVAR 32 10))
+
+   /*-------------------------------------------------------------------------*/
+   /* For display devices, use format 0600; offset at 878                *DSP */
+   /*-------------------------------------------------------------------------*/
+   IF COND(&DCAT = '*DSP') THEN(DO)
+   CALL PGM(QDCRDEVD) PARM( &RCVVAR    +
+                            &RCVVARLEN +
+                            &FMT06     +
+                            &DEV       +
+                            &ERRCODE   )
+
+   CHGVAR VAR(&IP) VALUE(%SST(&RCVVAR 878 15))
+   SNDPGMMSG  MSG(&DEV *BCAT 'is using' *BCAT &IP)
+
+   GOTO CMDLBL(END)
+   ENDDO
+
+   /*-------------------------------------------------------------------------*/
+   /* For printer devices, use format 1100; offset dependent on class    *PRT */
+   /*-------------------------------------------------------------------------*/
+   IF COND(&DCAT = '*PRT') THEN(DO)
+   CALL PGM(QDCRDEVD) PARM( &RCVVAR    +
+                            &RCVVARLEN +
+                            &FMT11     +
+                            &DEV       +
+                            &ERRCODE   )
+
+   /* Determine device class - *VRT or *LAN */
+   CHGVAR VAR(&DCLS) VALUE(%SST(&RCVVAR 153 15))
+
+   SELECT
+   WHEN COND(&DCLS='*LAN') THEN(DO)
+     CHGVAR VAR(&IP) VALUE(%SST(&RCVVAR 1065 15))
+     ENDDO
+   WHEN COND(&DCLS='*VRT') THEN(DO)
+     CHGVAR VAR(&IP) VALUE(%SST(&RCVVAR 1405 15))
+     ENDDO
+   ENDSELECT
+
+   SNDPGMMSG  MSG(&DEV *BCAT 'is using' *BCAT &IP)
+
+   GOTO CMDLBL(END)
+   ENDDO
+
+   /*-------------------------------------------------------------------------*/
+
+ NODEV:
+   SNDPGMMSG  MSG('Device not found')
+ END:
+   ENDPGM
