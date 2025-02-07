@@ -4,5 +4,5 @@
 /* pgmr- ctimmons                                   */
 /****************************************************/
              pgm
-             wrkactjob sbs(qbatch)
+             wrkactjob sbs(qbatch) interval(5)
              endpgm
