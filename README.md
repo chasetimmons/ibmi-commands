@@ -30,7 +30,17 @@ Mostly for fun, some useful little utilities that make my life easier.
   ![image](https://github.com/user-attachments/assets/e98d74c0-f9d9-4699-bbdf-c7d0213db562)
 ***  
 
+## COUNT - Count members in a library 
+  *Syntax: "count members in this library"*   
+  ![image](https://github.com/user-attachments/assets/3983ebc6-32f8-4766-afb6-7869f041b948)  
+  *Example:*   
+  ![image](https://github.com/user-attachments/assets/fa837ff0-b4eb-4241-8c99-10231ff54d2d)  
+  *Result:*   
+  ![image](https://github.com/user-attachments/assets/ba928038-e5cc-4bd5-a925-5edacdf9d641)  
+***  
+
 ## PROXYCMDS - Proxy Commands - Command Shortcuts 
+  * WUP - Work with User Profiles
   * WMP - Work with Members Using PDM
   * WOP - Work with Objects Using PDM
   * WAJ - Work with Active Jobs
