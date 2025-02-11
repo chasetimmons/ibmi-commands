@@ -1,0 +1,31 @@
+/*---------------------------------------------------------------------------*/
+/*  OBJECT: count                                                            */
+/*    TEXT: count members in a library                                       */
+/* CREATED: 11/18/24                                                         */
+/*  AUTHOR: C.M.T.                                                           */
+/*---------------------------------------------------------------------------*/
+/* MODIFICATIONS:                                                            */
+/* DATE      MOD  AUTHOR      DESCRIPTION                                    */
+/* xxxxxx    xxx  xxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */
+/*---------------------------------------------------------------------------*/
+             PGM        PARM(&LIB)
+
+             DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)
+
+             RUNSQL     SQL('DROP TABLE QTEMP/COUNT') COMMIT(*NONE)
+             MONMSG     MSGID(SQL9010)
+
+             RUNSQL     SQL('CREATE TABLE QTEMP/COUNT AS +
+                             (SELECT SYSTEM_TABLE_SCHEMA AS Library, +
+                               SYSTEM_TABLE_NAME AS File, +
+                               TO_CHAR(COUNT(*),''999G999'') AS Members +
+                              FROM QSYS2.SYSPARTITIONSTAT +
+                              WHERE SYSTEM_TABLE_SCHEMA = ''' || &LIB |< ''' +
+                              AND SOURCE_TYPE IS NOT NULL +
+                              GROUP BY SYSTEM_TABLE_SCHEMA,SYSTEM_TABLE_NAME +
+                              ORDER BY 1,2) WITH DATA') +
+                        COMMIT(*NONE)
+
+             RUNQRY     QRYFILE((QTEMP/COUNT))
+
+ENDCLPGM:    ENDPGM
